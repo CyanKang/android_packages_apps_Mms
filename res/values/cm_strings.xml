@@ -150,4 +150,9 @@
     <!-- MMS push permission -->
     <string name="label_mms_push">MMS Push</string>
     <string name="desc_mms_push">Pushes MMS from outbox to the network</string>
+
+    <!-- Add recipients -->
+    <string name="add_recipients">Add recipients</string>
+    <string name="add_recipients_positive_button">Add</string>
+
 </resources>
