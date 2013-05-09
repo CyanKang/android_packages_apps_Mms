@@ -32,7 +32,7 @@ import com.android.mms.LogTag;
 import com.android.mms.R;
 import com.android.mms.data.Contact;
 import com.android.mms.data.Group;
-import com.android.mms.data.PhoneNumber;;
+import com.android.mms.data.PhoneNumber;
 
 public class AddRecipientsListItem extends RelativeLayout {
     private static final String TAG = "AddRecipientsListItem";
@@ -54,12 +54,14 @@ public class AddRecipientsListItem extends RelativeLayout {
 
     public AddRecipientsListItem(Context context, PhoneNumber phoneNumber) {
         super(context);
+        mContext = context;
         mPhoneNumber = phoneNumber;
         mGroup = null;
     }
 
     public AddRecipientsListItem(Context context, Group group) {
         super(context);
+        mContext = context;
         mGroup = group;
         mPhoneNumber = null;
     }
@@ -85,6 +87,7 @@ public class AddRecipientsListItem extends RelativeLayout {
         mLabelView = (TextView) findViewById(R.id.label);
         mAvatarView = (QuickContactBadge) findViewById(R.id.avatar);
         mCheckBox = (CheckBox) findViewById(R.id.checkbox);
+
     }
 
     public PhoneNumber getPhoneNumber() {
@@ -133,7 +136,7 @@ public class AddRecipientsListItem extends RelativeLayout {
 
         mPhoneNumber = phoneNumber;
 
-        if (phoneNumber.isDefault()) {
+        if (phoneNumber.isFirst()) {
             mNameView.setVisibility(View.VISIBLE);
             mNameView.setText(name);
             mNumberViewNoAvatar.setVisibility(View.GONE);

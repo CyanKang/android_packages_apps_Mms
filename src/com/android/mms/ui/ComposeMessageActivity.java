@@ -3565,11 +3565,6 @@ public class ComposeMessageActivity extends Activity
             confirmSendMessageIfNeeded();
         } else if (v == mRecipientsPicker) {
             launchMultiplePhonePicker();
-        } else if ((v == mRecipientsSelector)) {
-            //Toast.makeText(getApplicationContext(), "click sur selecteur", Toast.LENGTH_LONG).show();
-            launchRecipientsSelector();
-        }
-        else if((v == mQuickEmoji)) {
         } else if (v == mQuickEmoji) {
             showEmojiDialog();
         } else if (v == mRecipientsSelector) {
