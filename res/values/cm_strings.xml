@@ -157,7 +157,9 @@
 
     <!-- Add recipients -->
     <string name="add_recipients">Add recipients</string>
-    <string name="add_recipients_positive_button">Add</string>
+    <string name="groups_header">Groups</string>
+    <string name="loading_recipients">Loading contacts and groups</string>
+    <string name="no_recipients">No possible recipients</string>
 
     <!-- Blacklist preferences -->
     <string name="blacklist_title">Blacklist</string>
