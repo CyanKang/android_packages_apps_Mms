@@ -17,20 +17,16 @@
 package com.android.mms.ui;
 
 import android.content.Context;
-import android.provider.UserDictionary;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AlphabetIndexer;
 import android.widget.ArrayAdapter;
-import android.widget.CheckBox;
 import android.widget.SectionIndexer;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.mms.R;
 import com.android.mms.data.Group;
 import com.android.mms.data.PhoneNumber;
+import com.android.mms.util.HanziToPinyin;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -52,7 +48,15 @@ public class AddRecipientsListAdapter extends ArrayAdapter<AddRecipientsListItem
         for (int i = 0; i < items.size(); i++) {
             AddRecipientsListItem item = items.get(i);
             if (!item.isGroup()) {
-                String s = item.getPhoneNumber().getName().substring(0, 1).toUpperCase();
+                String name = item.getPhoneNumber().getName();
+                String s = name.substring(0, 1).toUpperCase();
+                final HanziToPinyin pinyin = HanziToPinyin.getInstance();
+                String hzPinYin = pinyin.getFirstPinYin(name).toUpperCase();
+
+                if (!name.equals(hzPinYin) && !hzPinYin.isEmpty()) {
+                    s = hzPinYin;
+                }
+
                 if (!alphaIndexer.containsKey(s)) {
                     alphaIndexer.put(s, i);
                 }
@@ -113,7 +117,7 @@ public class AddRecipientsListAdapter extends ArrayAdapter<AddRecipientsListItem
 
             if (cid == nextCid) {
                 showFooter = false;
-                nextPhoneNumber.setDefault(false);
+                nextPhoneNumber.setFirst(false);
             }
             view.bind(getContext(), phoneNumber, showHeader, showFooter);
         } else {
@@ -129,7 +133,7 @@ public class AddRecipientsListAdapter extends ArrayAdapter<AddRecipientsListItem
 
     @Override
     public int getSectionForPosition(int position) {
-        return 1;
+        return 0;
     }
 
     @Override

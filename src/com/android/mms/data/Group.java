@@ -97,6 +97,12 @@ public class Group {
         return mPhoneNumbers;
     }
 
+    public void addPhoneNumber(PhoneNumber phoneNumber) {
+        if (!mPhoneNumbers.contains(phoneNumber)) {
+            mPhoneNumbers.add(phoneNumber);
+        }
+    }
+
     /**
      * Returns true if this group is selected for a multi-operation.
      */
