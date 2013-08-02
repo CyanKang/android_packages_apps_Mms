@@ -132,6 +132,7 @@ import android.widget.LinearLayout;
 
 import com.android.internal.telephony.TelephonyIntents;
 import com.android.internal.telephony.TelephonyProperties;
+import com.android.internal.telephony.util.BlacklistUtils; 
 import com.android.internal.util.CharSequences;
 import com.android.mms.LogTag;
 import com.android.mms.MmsApp;
@@ -260,6 +261,7 @@ public class ComposeMessageActivity extends Activity
     private static final int MENU_GROUP_PARTICIPANTS      = 32;
     private static final int MENU_INSERT_EMOJI            = 33;
     private static final int MENU_ADD_TEMPLATE            = 34;
+    private static final int MENU_ADD_TO_BLACKLIST        = 35;
 
     private static final int DIALOG_TEMPLATE_SELECT        = 1;
     private static final int DIALOG_TEMPLATE_NOT_AVAILABLE = 2;
