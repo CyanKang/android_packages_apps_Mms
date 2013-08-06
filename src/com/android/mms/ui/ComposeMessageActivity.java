@@ -210,7 +210,7 @@ import java.util.regex.Pattern;
 public class ComposeMessageActivity extends Activity
         implements View.OnClickListener, TextView.OnEditorActionListener,
         MessageStatusListener, Contact.UpdateListener, OnGesturePerformedListener,
-        LoaderManager.LoaderCallbacks<Cursor>  {
+        LoaderManager.LoaderCallbacks<Cursor>, SensorEventListener  {
     public static final int REQUEST_CODE_ATTACH_IMAGE        = 100;
     public static final int REQUEST_CODE_TAKE_PICTURE        = 101;
     public static final int REQUEST_CODE_ATTACH_VIDEO        = 102;
