@@ -60,6 +60,10 @@ import android.gesture.GestureOverlayView;
 import android.gesture.GestureOverlayView.OnGesturePerformedListener;
 import android.gesture.Prediction;
 import android.graphics.drawable.Drawable;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -389,6 +393,13 @@ public class ComposeMessageActivity extends Activity
                                             // If the value >= 0, then we jump to that line. If the
                                             // value is maxint, then we jump to the end.
     private long mLastMessageId;
+
+    // Motion Call
+    private SensorManager mSensorManager;
+    private int sensorOrientationY;
+    private int sensorProximity;
+    private boolean initProx;
+    private boolean proxChanged;
 
     // Add SMS to calendar reminder
     private static final String CALENDAR_EVENT_TYPE = "vnd.android.cursor.item/event";
@@ -2019,6 +2030,64 @@ public class ComposeMessageActivity extends Activity
         }
     }
 
+    // Motion Call
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+
+        /* Get event if orientation is changed, 
+         * save sensor event.values to check on them later
+         */
+        switch (event.sensor.getType()) {
+
+        case Sensor.TYPE_ORIENTATION:
+            sensorOrientationY = (int) event.values[SensorManager.DATA_Y];
+            break;
+
+        case Sensor.TYPE_PROXIMITY:
+            int currentProx = (int) event.values[0];
+            if (initProx) {
+                sensorProximity = currentProx;
+                initProx = false;
+            } else {
+                if( sensorProximity > 0 && currentProx == 0){
+                    proxChanged = true;
+                }
+            }
+            sensorProximity = currentProx;
+            break;
+        }
+
+        if (rightOrientation(sensorOrientationY) && proxChanged ) {
+
+            if (getRecipients().isEmpty() == false) {
+                // Unregister listener to don't let the onSesorChanged run the whole time
+                mSensorManager.unregisterListener(this,
+                        mSensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION));
+                mSensorManager.unregisterListener(this,
+                        mSensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY));
+
+                // Get number and attach it to an Intent.ACTION_CALL, then start the intent
+                String number = getRecipients().get(0).getNumber();
+                Intent dialIntent = new Intent(Intent.ACTION_CALL);
+                dialIntent.setData(Uri.fromParts("tel", number, null));
+                // dialIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(dialIntent);
+            }
+        }
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+    }
+
+    public boolean rightOrientation(int orinentation) {
+        if (orinentation < -65) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     private void showSubjectEditor(boolean show) {
         if (Log.isLoggable(LogTag.APP, Log.VERBOSE)) {
             log("" + show);
@@ -2411,6 +2480,24 @@ public class ComposeMessageActivity extends Activity
                 | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES
                 | InputType.TYPE_TEXT_FLAG_MULTI_LINE);
 
+        // Motion Call
+        boolean motionCallEnabled = prefs.getBoolean(MessagingPreferenceActivity.MOTION_CALL_RECIPIENT, false);
+        
+        if(motionCallEnabled) {
+            sensorOrientationY = 0;
+            sensorProximity = 0;
+            proxChanged = false;
+            initProx = true;
+
+            mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+            mSensorManager.registerListener(this,
+                        mSensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION),
+                        SensorManager.SENSOR_DELAY_UI);
+            mSensorManager.registerListener(this,
+                        mSensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY),
+                        SensorManager.SENSOR_DELAY_UI);
+        }
+
         mIsRunning = true;
         updateThreadIdIfRunning();
         mConversation.markAsRead(true);
@@ -2448,6 +2535,18 @@ public class ComposeMessageActivity extends Activity
         }
         if (LogTag.VERBOSE || Log.isLoggable(LogTag.APP, Log.VERBOSE)) {
             Log.v(TAG, "onPause: mSavedScrollPosition=" + mSavedScrollPosition);
+        }
+
+        //Motion Call
+        SharedPreferences prefs = PreferenceManager
+                .getDefaultSharedPreferences((Context) ComposeMessageActivity.this);
+        boolean motionCallEnabled = prefs.getBoolean(MessagingPreferenceActivity.MOTION_CALL_RECIPIENT, false);
+        
+        if(motionCallEnabled){
+            mSensorManager.unregisterListener(this,
+                        mSensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION));
+            mSensorManager.unregisterListener(this,
+                        mSensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY));
         }
 
         mConversation.markAsRead(true);
