@@ -70,6 +70,12 @@
 
         <CheckBoxPreference
             android:defaultValue="false"
+            android:key="pref_key_motion_call_recipient"
+            android:summary="@string/pref_summary_motion_call_recipient"
+            android:title="@string/pref_title_motion_call_recipient" />
+
+        <CheckBoxPreference
+            android:defaultValue="false"
             android:key="pref_key_sms_delivery_reports"
             android:summary="@string/pref_summary_sms_delivery_reports"
             android:title="@string/pref_title_sms_delivery_reports" />

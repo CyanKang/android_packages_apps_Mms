@@ -124,6 +124,10 @@ public class MessagingPreferenceActivity extends PreferenceActivity
 
     public static final String DELAY_SEND_ENABLED     = "pref_key_delay_send";
     public static final String DELAY_SEND_DURATION     = "pref_delay_send_duration";
+
+    //Motion Call
+    public static final String MOTION_CALL_RECIPIENT     = "pref_key_motion_call_recipient";
+
     private CheckBoxPreference mEnableDelaySendMessagePref;
     private ListPreference mDelaySendMessagDurationPref;
 
@@ -163,6 +167,9 @@ public class MessagingPreferenceActivity extends PreferenceActivity
 
     // Blacklist
     private PreferenceScreen mBlacklist;
+
+    // Motion Call
+    private CheckBoxPreference mMotionCallRecipient;
 
     @Override
     protected void onCreate(Bundle icicle) {
@@ -242,6 +249,9 @@ public class MessagingPreferenceActivity extends PreferenceActivity
         mEnableDelaySendMessagePref = (CheckBoxPreference) findPreference(DELAY_SEND_ENABLED);
         mDelaySendMessagDurationPref = (ListPreference) findPreference(DELAY_SEND_DURATION);
         mDelaySendMessagDurationPref.setSummary(mDelaySendMessagDurationPref.getEntry());
+
+        // Motion Call
+        mMotionCallRecipient = (CheckBoxPreference) findPreference(MOTION_CALL_RECIPIENT);
 
         setMessagePreferences();
     }
@@ -370,6 +380,15 @@ public class MessagingPreferenceActivity extends PreferenceActivity
             }
         });
 
+        mMotionCallRecipient.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+                boolean value = (Boolean) newValue;
+                sharedPreferences.edit().putBoolean(MOTION_CALL_RECIPIENT, value).commit();
+                return true;
+            }
+        });
+
         mSmsRecycler = Recycler.getSmsRecycler();
         mMmsRecycler = Recycler.getMmsRecycler();
 
@@ -389,6 +408,8 @@ public class MessagingPreferenceActivity extends PreferenceActivity
 
         setEnabledDelaySendMessagePref();
         mDelaySendMessagDurationPref.setOnPreferenceChangeListener(this);
+
+
     }
 
     private void setEnabledDelaySendMessagePref() {
@@ -577,6 +598,11 @@ public class MessagingPreferenceActivity extends PreferenceActivity
             }
         } else if (preference == mEnableDelaySendMessagePref){
             enableDelaySendMessage(mEnableDelaySendMessagePref.isChecked(), this);
+        } else if (preference == mMotionCallRecipient) {
+            SharedPreferences.Editor editor =
+                    PreferenceManager.getDefaultSharedPreferences(this).edit();
+            boolean checked = mMotionCallRecipient.isChecked();
+            editor.putBoolean(MOTION_CALL_RECIPIENT, checked).commit();
         }
 
         return super.onPreferenceTreeClick(preferenceScreen, preference);
