@@ -43,21 +43,14 @@
         android:visibility="gone"
     />
 
-    <LinearLayout
-        android:id="@+id/button_multi_selection"
-        android:orientation="horizontal"
+    <ImageButton
+        android:id="@+id/recipients_selector"
+        android:nextFocusLeft="@+id/recipients_editor"
+        android:background="?android:attr/selectableItemBackground"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent"
+        android:padding="12dip"
+        android:src="@drawable/ic_recipients_add"
+    />
 
-        <ImageButton
-            android:id="@+id/recipients_selector"
-            style="?android:attr/borderlessButtonStyle"
-            android:nextFocusLeft="@+id/recipients_editor"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1.0"
-            android:layout_marginLeft="4dip"
-            android:src="@drawable/ic_recipients_add"
-        />
-    </LinearLayout>
 </LinearLayout>
