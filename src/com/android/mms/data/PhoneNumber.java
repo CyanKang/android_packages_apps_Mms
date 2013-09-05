@@ -26,19 +26,19 @@ import android.util.Log;
 import com.android.mms.LogTag;
 
 /**
- * An interface for finding information about phone numbers
+ * An interface for finding information about recipients
  */
 public class PhoneNumber {
     private static final String TAG = "Mms/recipient";
     private static final boolean DEBUG = false;
 
-    private static final int _ID                    = 0;
-    private static final int PHONE_NUMBER           = 1;
-    private static final int PHONE_TYPE             = 2;
-    private static final int PHONE_LABEL            = 3;
-    private static final int PHONE_DISPLAY_NAME     = 4;
-    private static final int PHONE_IS_SUPER_PRIMARY = 5;
-    private static final int PHONE_CONTACT_ID       = 6;
+    private static final int _ID                = 0;
+    private static final int PHONE_NUMBER       = 1;
+    private static final int PHONE_TYPE         = 2;
+    private static final int PHONE_LABEL        = 3;
+    private static final int PHONE_DISPLAY_NAME = 4;
+    private static final int PHONE_IS_PRIMARY   = 5;
+    private static final int PHONE_CONTACT_ID   = 6;
 
     private Context mContext;
 
@@ -48,13 +48,12 @@ public class PhoneNumber {
     private String mLabel;            // The label of the number of the phone
     private String mName;             // The name of the contact which the phone belongs to
     private boolean mIsDefault;       // True if this phone is the default of the contact
-    private boolean mIsFirst;         // True if this phone is the first of the contact (needed if default is not set)
     private long mContactId;          // The ID of the contact
     private ArrayList<Group> mGroups; // The groups of the contact
     private boolean mIsChecked;       // True if user has selected the phone
 
     private PhoneNumber(Context context, long id, String number, int type, String label,
-                      String name, boolean isDefault, boolean isFirst, long contactId, ArrayList<Group> groups, boolean isChecked) {
+                      String name, boolean isDefault, long contactId, ArrayList<Group> groups, boolean isChecked) {
         mContext = context;
 
         mId = id;
@@ -63,7 +62,6 @@ public class PhoneNumber {
         mLabel = label;
         mName = name;
         mIsDefault = isDefault;
-        mIsFirst = isFirst;
         mContactId = contactId;
         mGroups = groups;
         mIsChecked = isChecked;
@@ -105,14 +103,6 @@ public class PhoneNumber {
         mIsDefault = isDefault;
     }
 
-    public boolean isFirst() {
-        return mIsFirst;
-    }
-
-    public void setFirst(boolean isFirst) {
-        mIsFirst = isFirst;
-    }
-
     public long getContactId() {
         return mContactId;
     }
@@ -126,9 +116,7 @@ public class PhoneNumber {
     }
 
     public void addGroup(Group group) {
-        if (!mGroups.contains(group)) {
-            mGroups.add(group);
-        }
+        mGroups.add(group);
     }
 
     /**
@@ -170,8 +158,7 @@ public class PhoneNumber {
         phoneNumber.mName = c.getString(PHONE_DISPLAY_NAME);
         phoneNumber.mContactId = c.getLong(PHONE_CONTACT_ID);
         phoneNumber.mGroups = new ArrayList<Group>();
-        phoneNumber.mIsDefault = (c.getInt(PHONE_IS_SUPER_PRIMARY) != 0) ? true : false;
-        phoneNumber.mIsFirst = true;
+        phoneNumber.mIsDefault = true;
 
         if (Log.isLoggable(LogTag.THREAD_CACHE, Log.VERBOSE)) {
             Log.d(TAG, "fillFromCursor: recipient=" + phoneNumber + ", recipientId=" + phoneNumber.mId
@@ -193,14 +180,14 @@ public class PhoneNumber {
             Phone.TYPE,
             Phone.LABEL,
             Phone.DISPLAY_NAME,
-            Phone.IS_SUPER_PRIMARY,
+            Phone.IS_PRIMARY,
             Phone.CONTACT_ID
         };
 
         final String phonesSelection = Phone.NUMBER + " NOT NULL";
 
         final String phonesSort = Phone.DISPLAY_NAME + ", "
-              + "CASE WHEN " + Phone.IS_SUPER_PRIMARY + "=0 THEN 1 ELSE 0 END";
+              + "CASE WHEN " + Phone.IS_PRIMARY + "=0 THEN 1 ELSE 0 END";
 
         final Cursor phonesCursor = context.getContentResolver().query(Phone.CONTENT_URI,
                 phonesProjection, phonesSelection, null, phonesSort);

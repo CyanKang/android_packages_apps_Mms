@@ -40,7 +40,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.android.mms.R;
-import com.android.mms.data.Contact;
 import com.android.mms.data.GMembership;
 import com.android.mms.data.Group;
 import com.android.mms.data.PhoneNumber;
@@ -175,11 +174,13 @@ public class AddRecipientsList extends ListActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.add_recipients_list_menu, menu);
+        MenuItem item = menu.findItem(R.id.search);
         return super.onCreateOptionsMenu(menu);
     }
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
+        MenuItem item = menu.findItem(R.id.search);
         return super.onPrepareOptionsMenu(menu);
     }
 
@@ -212,10 +213,8 @@ public class AddRecipientsList extends ListActivity {
         int count = phoneNumbers.size();
 
         for (int i = 0; i < count; i++) {
-            PhoneNumber phoneNumber = phoneNumbers.get(i);
-            if (phoneNumber.isDefault() || phoneNumber.isFirst()) {
-                checkPhoneNumber(phoneNumber, check);
-            }
+            PhoneNumber phone = phoneNumbers.get(i);
+            checkPhoneNumber(phone, check);
         }
     }
 
@@ -288,8 +287,10 @@ public class AddRecipientsList extends ListActivity {
                     for (int j = 0; j < groupsCount; j++) {
                         Group group = mGroups.get(j);
                         if (group.getId() == gid) {
-                            group.addPhoneNumber(phoneNumber);
-                            phoneNumber.addGroup(group);
+                            group.getPhoneNumbers().add(phoneNumber);
+                            if (!phoneNumber.getGroups().contains(group)) {
+                                phoneNumber.addGroup(group);
+                            }
                         }
                     }
                 }
