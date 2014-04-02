@@ -18,10 +18,22 @@
     <string name="groups_header">Groups</string>
     <string name="no_recipients">No contacts</string>
     <string name="hint_findContacts">Find contacts</string>
+    <string name="system_audio_item">System audio</string>
+    <string name="external_audio_item">External audio</string>
 
     <!-- Preferences -->
     <string name="pref_title_mms_enter_action">Enter key behaviour</string>
     <string name="pref_mms_enter_new_line">Force newline</string>
     <string name="pref_mms_enter_default">Default</string>
+
+    <!-- Delay delivery -->
+    <string name="pref_title_send_delay">Delivery delay</string>
+    <string name="send_delay_immediate">Send immediately</string>
+    <string name="send_delay_3seconds">3 seconds</string>
+    <string name="send_delay_5seconds">5 seconds</string>
+    <string name="send_delay_10seconds">10 seconds</string>
+    <string name="send_delay_20seconds">20 seconds</string>
+    <string name="send_delay_30seconds">30 seconds</string>
+    <string name="sent_countdown">Message delivery countdown</string>
 
 </resources>
